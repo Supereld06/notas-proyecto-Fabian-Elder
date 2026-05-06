@@ -9,7 +9,7 @@ export class CategoryController {
       userId: req.user.id
     });
 
-    res.json(category);
+    res.status(201).json(category);
   };
 
   getAll = async (req, res) => {

@@ -4,6 +4,14 @@ export class CategoryService {
   }
 
   async createCategory(data) {
+    if (!data.name) {
+      throw new Error("Name is required");
+    }
+
+    if (!data.userId) {
+      throw new Error("User is required");
+    }
+
     return await this.repository.create(data);
   }
 

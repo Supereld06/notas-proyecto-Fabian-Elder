@@ -5,13 +5,12 @@ import upload from "../middlewares/upload.middleware.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { roleMiddleware } from "../middlewares/role.middleware.js";
 
-//  SOLO MONGO
-import NoteMongoRepository from "../../infrastructure/database/mongo/note.mongo.repository.js";
+import NoteMySQLRepository from "../../infrastructure/database/mysql/note.mysql.repository.js";
 import MailService from "../../infrastructure/services/mail.service.js";
 
 //  Inyección de dependencias
 const mailService = new MailService();
-const noteRepository = new NoteMongoRepository(); 
+const noteRepository = new NoteMySQLRepository();
 const noteService = new NoteService(noteRepository, mailService);
 const noteController = new NoteController(noteService);
 

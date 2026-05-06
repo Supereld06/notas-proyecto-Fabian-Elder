@@ -10,15 +10,17 @@ import authRoutes from './presentation/routes/auth.routes.js';
 import { categoryRoutes } from "./presentation/routes/category.routes.js";
 
 import { connectMongo } from './infrastructure/database/mongo/connection.js';
+import { connectMysql } from './infrastructure/database/mysql/connection.js';
 import { setupSwagger } from './infrastructure/config/swagger.config.js';
 
 // CATEGORY IMPORTS
-import { CategoryRepository } from "./infrastructure/database/mongo/category.mongo.repository.js";
+import { CategoryRepository } from "./infrastructure/database/mysql/category.mysql.repository.js";
 import { CategoryService } from "./application/use-cases/category.service.js";
 import { CategoryController } from "./presentation/controllers/category.controller.js";
 import { authMiddleware } from "./presentation/middlewares/auth.middleware.js";
 
 await connectMongo();
+await connectMysql();
 
 const app = express();
 
