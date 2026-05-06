@@ -8,7 +8,7 @@ Route -> Middleware -> Controller -> Service / Use Case -> Repository -> Model /
 
 ## Rama de trabajo
 
-Los cambios del taller se encuentran en la rama:
+Los cambios del taller con mysql y mongo se encuentra en esta rama:
 
 ```text
 mysql-y-mongo
