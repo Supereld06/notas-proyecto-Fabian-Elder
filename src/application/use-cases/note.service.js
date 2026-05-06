@@ -1,4 +1,3 @@
-// importante al trabajar con nuestros archivos debemos añadir al final .js requerido para ESM
 import NoteEntity from "../../domain/entities/note.entity.js";
 
 export default class NoteService {
@@ -8,13 +7,20 @@ export default class NoteService {
     }
 
     async createNote(data) {
-        if (!data.title || !data.content) { throw new Error("Title and content are required"); }
+        if (!data.title || !data.content) {
+            throw new Error("Title and content are required");
+        }
 
-        const note = new NoteEntity(data);
+        const noteData = {
+            ...data,
+            categoryId: data.categoryId || null
+        };
+
+        const note = new NoteEntity(noteData);
         return await this.noteRepository.save(note);
     }
 
-    async getNotesByUserId(userId){
+    async getNotesByUserId(userId) {
         return await this.noteRepository.findByUserId(userId);
     }
 
@@ -30,15 +36,18 @@ export default class NoteService {
         return { message: "Note deleted successfully" };
     }
 
-    async shareNoteByEmail(noteId, targetEmail, currentUserId) {
+    async getById(id) {
+        return await this.noteRepository.findById(id);
+    }
+
+    async shareNoteByEmail(noteId, email, userId) {
         const note = await this.noteRepository.findById(noteId);
         if (!note) throw new Error("Note not found");
-        
-        // RESTRICCIÓN: Solo el dueño puede compartirla
-        if (note.userId !== currentUserId) {
-            throw new Error("Unauthorized: You can only share your own notes");
+
+        if (note.userId !== userId) {
+            throw new Error("Unauthorized");
         }
 
-        return await this.mailService.sendNoteEmail(targetEmail, note);
+        return await this.mailService.sendNoteEmail(email, note);
     }
 }

@@ -26,14 +26,14 @@ describe('NoteService - Pruebas Unitarias', () => {
 
     test('Crear: debería fallar al crear una nota sin título', async () => {
         const data = { content: 'Sin titulo' };
-        await expect(noteService.createNote(data)).rejects.toThrow("El título es obligatorio");
+        await expect(noteService.createNote(data)).rejects.toThrow("Title and content are required");
     });
 
     test('Leer: debería devolver las notas de un usuario específico', async () => {
         const mockNotes = [{ title: 'Nota 1' }, { title: 'Nota 2' }];
         mockNoteRepository.findByUserId.mockResolvedValue(mockNotes);
 
-        const result = await noteService.getNotesByUser('user_123');
+        const result = await noteService.getNotesByUserId('user_123');
 
         expect(mockNoteRepository.findByUserId).toHaveBeenCalledWith('user_123');
         expect(result.length).toBe(2);

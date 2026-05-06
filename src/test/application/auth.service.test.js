@@ -29,7 +29,7 @@ describe('AuthService - Pruebas unitarias', () => {
         //assert
         expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(userData.email);
         expect(mockUserRepository.save).toHaveBeenCalled();
-        expect(result).toBe("User registered successfully");    
+        expect(result.message).toBe("User registered successfully");  
     });
 
     test('deberia lanzar error si el email ya existe', async () => {
@@ -39,6 +39,6 @@ describe('AuthService - Pruebas unitarias', () => {
         const userData = { email: "test@example.com", password: "password123" };
 
         //act & assert
-        await expect(authService.register(userData)).rejects.toThrow("Email already exists");
+        await expect(authService.register(userData)).rejects.toThrow("Email already in use");
     }); 
 });

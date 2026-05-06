@@ -1,12 +1,22 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 
-const noteSchema = new Schema({
-    title: { type: String, required: true },
-    content: { type: String, required: true },
-    imageUrl: { type: String },
-    isPrivate: { type: Boolean, default: false },
-    password: { type: String },
-    userId: { type:String, required: true }
-}, { timestamps: true });
+const noteSchema = new Schema(
+    {
+        title: { type: String, required: true },
+        content: { type: String, required: true },
+        imageUrl: { type: String },
+        isPrivate: { type: Boolean, default: false },
+        password: { type: String },
+        userId: { type: String, required: true },
 
-export default model('Note', noteSchema);
+        // RELACIÓN
+        categoryId: {
+            type: Schema.Types.ObjectId,
+            ref: "Category",
+            required: false
+        }
+    },
+    { timestamps: true }
+);
+
+export default model("Note", noteSchema);

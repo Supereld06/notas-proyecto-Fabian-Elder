@@ -1,5 +1,6 @@
+import { jest } from '@jest/globals';
 import request from 'supertest';
-import app from '../../src/app.js';
+import app from "../../../src/app.js";
 import mongoose from 'mongoose';
 import JwtService from '../../src/infrastructure/security/jwt.service.js';
 
