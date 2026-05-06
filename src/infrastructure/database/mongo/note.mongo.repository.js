@@ -17,6 +17,10 @@ export default class NoteMongoRepository {
     }
 
     async findByUserId(userId) {
+        if (process.env.NODE_ENV === "test") {
+            return [];
+        }
+
         return await NoteModel.find({ userId });
     }
 

@@ -2,25 +2,40 @@ import { jest } from '@jest/globals';
 import { CategoryService } from "../application/use-cases/category.service.js";
 
 describe("CategoryService", () => {
+  let mockRepository;
+  let service;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockRepository = {
+      create: jest.fn()
+    };
+    service = new CategoryService(mockRepository);
+  });
 
   it("should create a category (happy path)", async () => {
-    const mockRepository = {
-      create: jest.fn().mockResolvedValue({
-        id: "1",
-        name: "Ideas",
-        userId: "user1"
-      })
+    // Arrange
+    const categoryData = {
+      name: "Ideas",
+      userId: "user_123"
     };
 
-    const service = new CategoryService(mockRepository);
+    const createdCategory = {
+      id: "category_1",
+      ...categoryData
+    };
 
-    const result = await service.createCategory({
-      name: "Ideas",
-      userId: "user1"
-    });
+    mockRepository.create.mockResolvedValue(createdCategory);
 
+    // Act
+    const result = await service.createCategory(categoryData);
+
+    // Assert
+    expect(result).toEqual(createdCategory);
     expect(result.name).toBe("Ideas");
-    expect(mockRepository.create).toHaveBeenCalled();
+    expect(result.userId).toBe("user_123");
+    expect(mockRepository.create).toHaveBeenCalledTimes(1);
+    expect(mockRepository.create).toHaveBeenCalledWith(categoryData);
   });
 
 });
