@@ -1,19 +1,17 @@
-import { jest } from '@jest/globals';
 import request from 'supertest';
 import app from "../../../src/app.js";
 import mongoose from 'mongoose';
-import JwtService from '../../src/infrastructure/security/jwt.service.js';
+import JwtService from '../../infrastructure/security/jwt.service.js';
 
-describe('Integración - API Completa', () => {
-    
-    // Si estuviéramos usando una base de datos real de pruebas, aquí nos desconectaríamos al finalizar
+describe('Integracion - API Completa', () => {
+
     afterAll(async () => {
         await mongoose.disconnect();
     });
 
     describe('1. Healthcheck Endpoint', () => {
-        test('GET /api/v1/health debería devolver 200 OK y estado', async () => {
-            const response = await request(app).get('/api/v1/health');
+        test('GET /api/health deberia devolver 200 OK y estado', async () => {
+            const response = await request(app).get('/api/health');
             expect(response.statusCode).toBe(200);
             expect(response.body).toHaveProperty('status', 'OK');
         });
@@ -22,7 +20,6 @@ describe('Integración - API Completa', () => {
     describe('2. Endpoints de Notas (Protegidos con JWT)', () => {
         let validToken;
 
-        // Antes de probar las notas, necesitamos generar un token falso para pasar el authMiddleware
         beforeAll(() => {
             validToken = JwtService.generateToken({
                 id: 'usuario_falso_123',
@@ -31,30 +28,28 @@ describe('Integración - API Completa', () => {
             });
         });
 
-        test('GET /api/v1/notes debería fallar si no se envía Token (401)', async () => {
+        test('GET /api/v1/notes deberia fallar si no se envia Token (401)', async () => {
             const response = await request(app).get('/api/v1/notes');
             expect(response.statusCode).toBe(401);
-            expect(response.body).toHaveProperty('error', 'Token no proveído');
+            expect(response.body).toHaveProperty('error', 'Authorization header missing or invalid');
         });
 
-        test('POST /api/v1/notes debería fallar si falta el Título (400 o 500)', async () => {
+        test('POST /api/v1/notes deberia fallar si falta el titulo (400 o 500)', async () => {
             const response = await request(app)
                 .post('/api/v1/notes')
-                .set('Authorization', `Bearer ${validToken}`) // Enviamos el token
-                .send({ content: 'Contenido sin titulo' }); // Simulamos req.body
-            
-            // Esperamos un error ya que el título es requerido
-            expect(response.statusCode).toBeGreaterThanOrEqual(400); 
+                .set('Authorization', `Bearer ${validToken}`)
+                .send({ content: 'Contenido sin titulo' });
+
+            expect(response.statusCode).toBeGreaterThanOrEqual(400);
         });
 
-        test('GET /api/v1/notes debería ser exitoso si se envía Token válido (200)', async () => {
+        test('GET /api/v1/notes deberia ser exitoso si se envia Token valido (200)', async () => {
             const response = await request(app)
                 .get('/api/v1/notes')
-                .set('Authorization', `Bearer ${validToken}`); // Enviamos el token en la cabecera
-            
+                .set('Authorization', `Bearer ${validToken}`);
+
             expect(response.statusCode).toBe(200);
-            // Al principio devolverá un array vacío si no hemos conectado a una BD real con datos
-            expect(Array.isArray(response.body)).toBeTruthy(); 
+            expect(Array.isArray(response.body)).toBeTruthy();
         });
     });
 });

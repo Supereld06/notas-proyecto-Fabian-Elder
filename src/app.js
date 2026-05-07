@@ -18,7 +18,9 @@ import { CategoryService } from "./application/use-cases/category.service.js";
 import { CategoryController } from "./presentation/controllers/category.controller.js";
 import { authMiddleware } from "./presentation/middlewares/auth.middleware.js";
 
-await connectMongo();
+if (process.env.NODE_ENV !== "test") {
+    await connectMongo();
+}
 
 const app = express();
 
@@ -53,6 +55,10 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`Servidor escuchando en el puerto ${PORT}`);
-});
+if (process.env.NODE_ENV !== "test") {
+    app.listen(PORT, () => {
+        console.log(`Servidor escuchando en el puerto ${PORT}`);
+    });
+}
+
+export default app;
